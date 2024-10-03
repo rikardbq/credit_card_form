@@ -1,0 +1,46 @@
+body,
+body input,
+body button {
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 18px;
+}
+
+.flexCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.grid {
+  display: grid;
+}
+
+.centeredHorizontal {
+  align-self: center;
+}
+
+.animated {
+  transition: all 0.2s cubic-bezier(0, 0.95, 0.57, 1.61);
+}
+
+.shadowing {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.rounded {
+  border-radius: 12px;
+}
+
+.gap10 {
+  gap: 10px;
+}
+
+.gap20 {
+  gap: 20px;
+}

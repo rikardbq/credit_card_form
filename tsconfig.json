@@ -17,10 +17,19 @@
     "isolatedModules": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    // "allowUnusedLabels": false,
     "jsx": "react-jsx"
   },
-  "exclude": ["node_modules", "dist", "coverage", "webpack.*.js", "*.config.js", "*.test.ts*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "webpack.*.js",
+    "*.config.js",
+    "*.test.ts*"
+  ],
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"

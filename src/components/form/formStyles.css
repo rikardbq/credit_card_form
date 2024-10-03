@@ -1,0 +1,28 @@
+.formWrapper {
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.formBody {
+  width: 400px;
+  padding: 10px;
+}
+
+.formCreditCardPreview {
+  position: relative;
+  padding: 10px;
+  width: 250px;
+  height: 120px;
+  transform: translateY(-80px);
+  background-color: #505050;
+  color: #fff;
+}
+
+.formCreditCardPreviewActive {
+  transform: translateY(-100px);
+}
+
+/* .formCreditCardPreview:hover {
+  transform: translateY(-100px);
+} */
