@@ -1,23 +1,30 @@
+import { useEffect } from "react";
 import "./formStyles.css";
 
 type InputProps = {
-  name: string | undefined;
-  title: string | undefined;
-  type: string | undefined;
-  value: string | number | undefined;
-  valueSetter: Function | undefined;
-  width?: string | undefined;
+  name: string;
+  title: string;
+  type: string;
+  field: any;
+  valueSetter: Function;
+  validate?: Function;
+  width?: string;
 };
 
 const Input = ({
   name,
   title,
   type,
-  value,
+  field,
   valueSetter,
+  validate,
   width,
   ...restProps
 }: InputProps) => {
+  useEffect(() => {
+    validate && validate(name, field.value);
+  }, [field.value]);
+
   return (
     <div className="flexCol">
       <label>{title}</label>
@@ -25,12 +32,12 @@ const Input = ({
         {...restProps}
         name={name}
         type={type}
-        value={value}
+        value={field.value}
         onChange={(e) => {
-          valueSetter && valueSetter(name, e.target.value);
+          valueSetter(name, e.target.value);
         }}
         style={{
-          width
+          width,
         }}
       />
     </div>

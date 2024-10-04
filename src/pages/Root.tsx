@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState /* useCallback */ } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   validateCreditCardNumber,
   getCreditCardBrandSchema,
@@ -14,14 +14,16 @@ type GenericObject = {
   [key: string]: any;
 };
 
-const numberRegexp = /^[0-9]+$/;
+const numberRegexp = /[0-9]+/;
 const validationSchema: GenericObject = {
   cardName: {
     regexp: /^[a-zA-ZåäöÅÄÖ-\s]+$/,
+    minLength: 2,
   },
   cardNumber: {
     regexp: /^[0-9\s]+$/,
     fn: (cCNum: string) => validateCreditCardNumber(cCNum),
+    maxLength: 24,
   },
   cvv: {
     regexp: numberRegexp,
@@ -58,17 +60,17 @@ const initialFormState: GenericObject = {
   cvv: {
     value: "",
     isValid: true,
-    errorMsg: "cvv must be 3 digits",
+    errorMsg: "CVV must be 3 digits",
   },
   month: {
     value: "",
     isValid: true,
-    errorMsg: "Month must be 12 or lower and be made up of 2 digits",
+    errorMsg: "Month must be in the range 1-12 and be made up of 2 digits",
   },
   year: {
     value: "",
     isValid: true,
-    errorMsg: "Year must be 99 or lower and be made up of 2 digits",
+    errorMsg: "Year must be in the range 0-99 and be made up of 2 digits",
   },
 };
 
@@ -86,103 +88,132 @@ const Root = () => {
     formState.year.value,
   ]);
 
-  // const validateForm = useCallback(
-  //   (form: any) => {
-  //     const { cardName, lastName, cardNumber, cvv, validity } = form;
-  //     let isValid = true;
+  const mutateFormState = useCallback(
+    (field: string, [key, val]: [string, any]) => {
+      setFormState({
+        ...formState,
+        [field]: {
+          ...formState[field],
+          [key]: val,
+        },
+      });
+    },
+    [
+      formState.cardName.value,
+      formState.cardName.isValid,
+      formState.cardNumber.value,
+      formState.cardNumber.isValid,
+      formState.cvv.value,
+      formState.cvv.isValid,
+      formState.month.value,
+      formState.month.isValid,
+      formState.year.value,
+      formState.year.isValid,
+    ]
+  );
 
-  //     isValid = isValid && validationSchema.cardName.regexp.test(cardName);
-  //     isValid = isValid && validationSchema.lastName.regexp.test(lastName);
-  //     isValid =
-  //       isValid && validationSchema.cardNumber.fn(cardNumber);
-  //     isValid = isValid && validationSchema.cvv.regexp.test(cvv);
-  //     isValid = isValid && validationSchema.month.regexp.test(validity.month);
-  //     isValid = isValid && validationSchema.year.regexp.test(validity.year);
+  const validateField = useCallback(
+    (field: string, value: string) => {
+      if (formTouched) {
+        const fieldSchema = validationSchema[field];
+        let isValid = true;
 
-  //     return isValid;
-  //   },
-  //   [
-  // formState.cardName,
-  // formState.lastName,
-  // formState.cardNumber,
-  // formState.cvv,
-  // formState.validity.month,
-  // formState.validity.year,
-  //   ]
-  // );
+        if (!!fieldSchema.regexp) {
+          isValid = isValid && fieldSchema.regexp.test(value);
+        }
+        if (!!fieldSchema.maxValue) {
+          const valueAsNumber = parseInt(value);
+          isValid =
+            isValid &&
+            !Number.isNaN(valueAsNumber) &&
+            valueAsNumber <= fieldSchema.maxValue;
+        }
+        if (!!fieldSchema.minLength) {
+          const valueNoSpaces = value.replaceAll(/\s/g, "");
+          isValid = isValid && valueNoSpaces.length >= fieldSchema.minLength;
+        }
+        if (!!fieldSchema.maxLength) {
+          const valueNoSpaces = value.replaceAll(/\s/g, "");
+          isValid = isValid && valueNoSpaces.length <= fieldSchema.maxLength;
+        }
+        if (!!fieldSchema.fn) {
+          isValid = isValid && fieldSchema.fn(value);
+        }
 
-  // const [isFormValid, setIsFormValid] = useState(false);
+        mutateFormState(field, ["isValid", isValid]);
+      }
+    },
+    [
+      formTouched,
+      formState.cardName.value,
+      formState.cardNumber.value,
+      formState.cvv.value,
+      formState.month.value,
+      formState.year.value,
+    ]
+  );
 
   const formFieldHandler = (field: string, value: string) => {
-    switch (field) {
-      case "cardName":
-        if (value.length === 0 || validationSchema[field].regexp.test(value)) {
-          setFormState({
-            ...formState,
-            [field]: {
-              ...formState[field],
-              value,
-            },
-          });
-        }
-        break;
-      case "cardNumber":
-        if (value.length === 0 || validationSchema[field].regexp.test(value)) {
-          const brandSchema = getCreditCardBrandSchema(value);
+    if (field === "cardName") {
+      if (value.length === 0 || validationSchema[field].regexp.test(value)) {
+        mutateFormState(field, ["value", value]);
+      }
+    } else if (field === "cardNumber") {
+      if (value.length === 0 || validationSchema[field].regexp.test(value)) {
+        const brandSchema = getCreditCardBrandSchema(value);
 
-          if (brandSchema !== undefined) {
-            const valueNoSpaces = value.replaceAll(/\s/g, "");
-            let regexpState = brandSchema.separationPattern.exec(valueNoSpaces);
+        if (brandSchema !== undefined) {
+          const valueNoSpaces = value.replaceAll(/\s/g, "");
+          let regexpState = brandSchema.separationPattern.exec(valueNoSpaces);
+          validationSchema[field].maxLength = brandSchema.maxLength;
 
-            while (regexpState !== null) {
-              const [, m1, m2, m3, m4] = regexpState;
-              const str = [m1, m2, m3, m4]
-                .filter((v) => v !== undefined)
-                .join(" ");
+          while (regexpState !== null) {
+            const [, m1, m2, m3, m4] = regexpState;
+            const str = [m1, m2, m3, m4]
+              .filter((v) => v !== undefined)
+              .join(" ");
 
-              value = str;
-              regexpState = brandSchema.separationPattern.exec(valueNoSpaces);
-            }
-
-            if (valueNoSpaces.length <= brandSchema.maxLength) {
-              setFormState({
-                ...formState,
-                [field]: {
-                  ...formState[field],
-                  value,
-                },
-              });
-            }
-          } else {
-            setFormState({
-              ...formState,
-              [field]: {
-                ...formState[field],
-                value,
-              },
-            });
+            value = str;
+            regexpState = brandSchema.separationPattern.exec(valueNoSpaces);
           }
-        }
-        break;
-      case "month":
-      case "year":
-      case "cvv":
-        if (value.length === 0 || validationSchema[field].regexp.test(value)) {
-          if (value.length <= validationSchema[field].maxLength) {
-            setFormState({
-              ...formState,
-              [field]: {
-                ...formState[field],
-                value,
-              },
-            });
+
+          if (valueNoSpaces.length <= brandSchema.maxLength) {
+            mutateFormState(field, ["value", value]);
           }
+        } else {
+          mutateFormState(field, ["value", value]);
         }
-        break;
-      default:
-        break;
+      }
+    } else if (field === "month" || field === "year" || field === "cvv") {
+      const fieldSchema = validationSchema[field];
+
+      if (
+        (value.length === 0 || fieldSchema.regexp.test(value)) &&
+        value.length <= fieldSchema.maxLength
+      ) {
+        mutateFormState(field, ["value", value]);
+      }
     }
   };
+
+  const formHasErrors = useMemo(
+    () =>
+      !formTouched ||
+      Object.values(formState).some((v) => !v.isValid || v.value === ""),
+    [
+      formTouched,
+      formState.cardName.value,
+      formState.cardName.isValid,
+      formState.cardNumber.value,
+      formState.cardNumber.isValid,
+      formState.cvv.value,
+      formState.cvv.isValid,
+      formState.month.value,
+      formState.month.isValid,
+      formState.year.value,
+      formState.year.isValid,
+    ]
+  );
 
   return (
     <FormBody>
@@ -197,64 +228,93 @@ const Root = () => {
             formTouched && "formCreditCardPreviewActive"
           }`}
         >
-          <div>{formState.cardNumber.value}</div>
-          <div>{formState.cardName.value}</div>
-          <div>
-            {formState.month.value} / {formState.year.value}
-          </div>
+          <div>{`name: ${formState.cardName.value}`}</div>
+          <div>{`number: ${formState.cardNumber.value}`}</div>
+          <div>{`cvv: ${formState.cvv.value}`}</div>
+          <div>{`month: ${formState.month.value}`}</div>
+          <div>{`year: ${formState.year.value}`}</div>
         </div>
       </div>
       <Input
         title="Card name"
         name="cardName"
         type="text"
-        value={formState.cardName.value}
-        valueSetter={(name: string, val: string) => formFieldHandler(name, val)}
+        field={formState.cardName}
+        valueSetter={formFieldHandler}
+        validate={validateField}
       />
-      <Input
-        title="Card number"
-        name="cardNumber"
-        type="text"
-        value={formState.cardNumber.value}
-        valueSetter={(name: string, val: string) => formFieldHandler(name, val)}
-      />
-      <div
-        className="grid gap10"
-        style={{ gridTemplateColumns: "0fr 0fr 1fr" }}
-      >
-        <Input
-          title="MM"
-          name="month"
-          type="text"
-          width="16px"
-          value={formState.month.value}
-          valueSetter={(name: string, val: string) =>
-            formFieldHandler(name, val)
-          }
-        />
-        <Input
-          title="YY"
-          name="year"
-          type="text"
-          width="16px"
-          value={formState.year.value}
-          valueSetter={(name: string, val: string) =>
-            formFieldHandler(name, val)
-          }
-        />
+      {!formState.cardName.isValid ? (
+        <div style={{ color: "red" }}>{formState.cardName.errorMsg}</div>
+      ) : (
+        <></>
+      )}
+      <div className="grid gap10" style={{ gridTemplateColumns: "1fr 0fr" }}>
+        <div>
+          <Input
+            title="Card number"
+            name="cardNumber"
+            type="text"
+            field={formState.cardNumber}
+            valueSetter={formFieldHandler}
+            validate={validateField}
+          />
+          {!formState.cardNumber.isValid ? (
+            <div style={{ color: "red" }}>{formState.cardNumber.errorMsg}</div>
+          ) : (
+            <></>
+          )}
+          {!formState.cvv.isValid ? (
+            <div style={{ color: "red" }}>{formState.cvv.errorMsg}</div>
+          ) : (
+            <></>
+          )}
+        </div>
         <Input
           title="CVV"
           name="cvv"
           type="text"
           width="24px"
-          value={formState.cvv.value}
-          valueSetter={(name: string, val: string) =>
-            formFieldHandler(name, val)
-          }
+          field={formState.cvv}
+          valueSetter={formFieldHandler}
+          validate={validateField}
+        />
+      </div>
+
+      <div>Expiration</div>
+      {!formState.month.isValid ? (
+        <div style={{ color: "red" }}>{formState.month.errorMsg}</div>
+      ) : (
+        <></>
+      )}
+      {!formState.year.isValid ? (
+        <div style={{ color: "red" }}>{formState.year.errorMsg}</div>
+      ) : (
+        <></>
+      )}
+      <div className="grid gap10" style={{ gridTemplateColumns: "0fr 0fr" }}>
+        <Input
+          title="MM"
+          name="month"
+          type="text"
+          width="14px"
+          field={formState.month}
+          valueSetter={formFieldHandler}
+          validate={validateField}
+        />
+        <Input
+          title="YY"
+          name="year"
+          type="text"
+          width="14px"
+          field={formState.year}
+          valueSetter={formFieldHandler}
+          validate={validateField}
         />
       </div>
       <div className="flexCol gap20 centeredHorizontal">
-        <button onClick={() => makePayment()}>PAY</button>
+        <button disabled={formHasErrors} onClick={() => makePayment()}>
+          PAY
+        </button>
       </div>
     </FormBody>
   );
