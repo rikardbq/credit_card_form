@@ -23,20 +23,21 @@ export const validateCreditCardNumber = (inputCreditCardNumber: string) => {
   const creditCardNumberArr = creditCardNumber.split("");
   const lastDigit = parseInt(creditCardNumberArr.pop() || "");
 
-  const numberSum = creditCardNumberArr.reverse().reduce((acc, n) => {
+  const numberSum = creditCardNumberArr.reverse().reduce((acc, n, i) => {
     let n_int = parseInt(n);
 
-    if (n_int % 2 !== 0) {
+    if ((i + 1) % 2 !== 0) {
       n_int = n_int * 2;
-    }
-    if (n_int > 9) {
-      n_int = n_int - 9;
+      
+      if (n_int > 9) {
+        n_int = n_int - 9;
+      }
     }
 
     return acc + n_int;
   }, 0);
   
-  return numberSum % 10 == lastDigit;
+  return numberSum % 10 === lastDigit;
 };
 
 // bit from stackoverflow

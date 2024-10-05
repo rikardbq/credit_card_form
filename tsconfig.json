@@ -1,7 +1,7 @@
 {
   /* Visit https://aka.ms/tsconfig to read more about this file */
   "compilerOptions": {
-    "rootDir": "src",
+    // "rootDir": "src",
     "outDir": "dist",
     "lib": ["dom", "esnext"],
     "target": "es5",
@@ -26,9 +26,12 @@
     "node_modules",
     "dist",
     "coverage",
+    "cypress",
     "webpack.*.js",
     "*.config.js",
-    "*.test.ts*"
+    "*.config.ts",
+    "*.jest.ts*",
+    "*.cy.ts*"
   ],
   "ts-node": {
     "compilerOptions": {
