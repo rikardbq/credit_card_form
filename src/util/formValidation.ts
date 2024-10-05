@@ -10,7 +10,6 @@ export const validationSchema: GenericObject = {
   cardNumber: {
     regexp: /^[0-9\s]+$/,
     fn: (cCNum: string) => validateCreditCardNumber(cCNum),
-    maxLength: 24,
   },
   cardCVV: {
     regexp: numberRegexp,
@@ -34,51 +33,44 @@ export const validationSchema: GenericObject = {
 };
 
 export const validateFieldAccordingToSchema =
-  (schema: GenericObject, formTouched?: boolean) =>
-  (field: string, value: string, cb?: Function) => {
-    if ((formTouched === undefined || formTouched) && value !== undefined) {
-      const fieldSchema = schema[field];
-      let isValid = true;
+  (schema: GenericObject) => (field: string, value: string) => {
+    const fieldSchema = schema[field];
+    let isValid = true;
 
-      if (!!fieldSchema) {
-        Object.keys(fieldSchema).map((key: string) => {
-          switch (key) {
-            case "regexp": {
-              isValid = isValid && fieldSchema[key].test(value);
-              break;
-            }
-            case "maxValue": {
-              const valueAsNumber = parseInt(value);
-              isValid =
-                isValid &&
-                !Number.isNaN(valueAsNumber) &&
-                valueAsNumber <= fieldSchema[key];
-              break;
-            }
-            case "minLength": {
-              const valueNoSpaces = value.replaceAll(/\s/g, "");
-              isValid = isValid && valueNoSpaces.length >= fieldSchema[key];
-              break;
-            }
-            case "maxLength": {
-              const valueNoSpaces = value.replaceAll(/\s/g, "");
-              isValid = isValid && valueNoSpaces.length <= fieldSchema[key];
-              break;
-            }
-            case "fn": {
-              isValid = isValid && fieldSchema[key](value);
-              break;
-            }
-            default:
-              break;
+    if (fieldSchema !== undefined) {
+      Object.keys(fieldSchema).map((key: string) => {
+        switch (key) {
+          case "regexp": {
+            isValid = isValid && fieldSchema[key].test(value);
+            break;
           }
-        });
-      }
-
-      if (cb !== undefined) {
-        cb(field, ["isValid", isValid]);
-      }
-
-      return isValid;
+          case "maxValue": {
+            const valueAsNumber = parseInt(value);
+            isValid =
+              isValid &&
+              !Number.isNaN(valueAsNumber) &&
+              valueAsNumber <= fieldSchema[key];
+            break;
+          }
+          case "minLength": {
+            const valueNoSpaces = value.replaceAll(/\s/g, "");
+            isValid = isValid && valueNoSpaces.length >= fieldSchema[key];
+            break;
+          }
+          case "maxLength": {
+            const valueNoSpaces = value.replaceAll(/\s/g, "");
+            isValid = isValid && valueNoSpaces.length <= fieldSchema[key];
+            break;
+          }
+          case "fn": {
+            isValid = isValid && fieldSchema[key](value);
+            break;
+          }
+          default:
+            break;
+        }
+      });
     }
+
+    return isValid;
   };

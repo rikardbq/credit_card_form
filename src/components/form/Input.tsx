@@ -7,6 +7,7 @@ type InputProps = {
   title: string;
   type: string;
   field: any;
+  formTouched?: boolean;
   mutateFormState: Function;
   valueSetter: Function;
   validate?: Function;
@@ -19,14 +20,21 @@ const Input = ({
   title,
   type,
   field,
+  formTouched,
   mutateFormState,
   valueSetter,
   validate,
   width,
 }: InputProps) => {
   useEffect(() => {
-    validate && validate(name, field.value, mutateFormState);
-  }, [field.value]);
+    if (
+      field.value !== undefined &&
+      (formTouched === undefined || formTouched)
+    ) {
+      validate &&
+        mutateFormState(name, ["isValid", validate(name, field.value)]);
+    }
+  }, [field.value, formTouched]);
 
   return (
     <div id={id} className="flexCol">

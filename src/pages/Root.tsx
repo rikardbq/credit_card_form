@@ -66,7 +66,6 @@ const Root = () => {
         if (brandSchema !== undefined) {
           const valueNoSpaces = value.replaceAll(/\s/g, "");
           let regexpState = brandSchema.separationPattern.exec(valueNoSpaces);
-          validationSchema[field].maxLength = brandSchema.maxLength;
 
           while (regexpState !== null) {
             const [, m1, m2, m3, m4] = regexpState;
@@ -101,7 +100,9 @@ const Root = () => {
     }
   };
 
-  const formTouched = Object.values(formState).some((v) => v.value !== undefined);
+  const formTouched = Object.values(formState).some(
+    (v) => v.value !== undefined
+  );
   const submitButtonDisabled =
     !formTouched ||
     Object.values(formState).some((v) => !v.isValid || v.value === undefined);
@@ -129,9 +130,10 @@ const Root = () => {
         name="cardName"
         type="text"
         field={formState.cardName}
+        formTouched={formTouched}
         mutateFormState={mutateFormState}
         valueSetter={formFieldHandler}
-        validate={validateFieldAccordingToSchema(validationSchema, formTouched)}
+        validate={validateFieldAccordingToSchema(validationSchema)}
       />
       <InputError
         id="cardNameError"
@@ -146,12 +148,10 @@ const Root = () => {
             name="cardNumber"
             type="text"
             field={formState.cardNumber}
+            formTouched={formTouched}
             mutateFormState={mutateFormState}
             valueSetter={formFieldHandler}
-            validate={validateFieldAccordingToSchema(
-              validationSchema,
-              formTouched
-            )}
+            validate={validateFieldAccordingToSchema(validationSchema)}
           />
           <InputError
             id="cardNumberError"
@@ -172,12 +172,10 @@ const Root = () => {
             type="text"
             width="24px"
             field={formState.cardCVV}
+            formTouched={formTouched}
             mutateFormState={mutateFormState}
             valueSetter={formFieldHandler}
-            validate={validateFieldAccordingToSchema(
-              validationSchema,
-              formTouched
-            )}
+            validate={validateFieldAccordingToSchema(validationSchema)}
           />
         </div>
       </div>
@@ -202,12 +200,10 @@ const Root = () => {
           type="text"
           width="14px"
           field={formState.cardMonth}
+          formTouched={formTouched}
           mutateFormState={mutateFormState}
           valueSetter={formFieldHandler}
-          validate={validateFieldAccordingToSchema(
-            validationSchema,
-            formTouched
-          )}
+          validate={validateFieldAccordingToSchema(validationSchema)}
         />
         <Input
           id="cardYear"
@@ -216,12 +212,10 @@ const Root = () => {
           type="text"
           width="14px"
           field={formState.cardYear}
+          formTouched={formTouched}
           mutateFormState={mutateFormState}
           valueSetter={formFieldHandler}
-          validate={validateFieldAccordingToSchema(
-            validationSchema,
-            formTouched
-          )}
+          validate={validateFieldAccordingToSchema(validationSchema)}
         />
       </div>
       <div className="flexCol gap20 centeredHorizontal">
