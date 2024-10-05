@@ -15,27 +15,27 @@ import InputError from "../components/form/InputError";
 
 const initialFormState: GenericObject = {
   cardName: {
-    value: "",
+    value: undefined,
     isValid: true,
     errorMsg: "Name can only contain letters in the range [a-zA-ZåäöÅÄÖ]",
   },
   cardNumber: {
-    value: "",
+    value: undefined,
     isValid: true,
     errorMsg: "Credit card isn't matching any known format",
   },
   cardCVV: {
-    value: "",
+    value: undefined,
     isValid: true,
     errorMsg: "CVV must be 3 digits",
   },
   cardMonth: {
-    value: "",
+    value: undefined,
     isValid: true,
     errorMsg: "Month must be in the range 1-12 and be made up of 2 digits",
   },
   cardYear: {
-    value: "",
+    value: undefined,
     isValid: true,
     errorMsg: "Year must be in the range 0-99 and be made up of 2 digits",
   },

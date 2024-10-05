@@ -36,7 +36,7 @@ export const validationSchema: GenericObject = {
 export const validateFieldAccordingToSchema =
   (schema: GenericObject, formTouched?: boolean) =>
   (field: string, value: string, cb?: Function) => {
-    if (formTouched === undefined || formTouched) {
+    if ((formTouched === undefined || formTouched) && value !== undefined) {
       const fieldSchema = schema[field];
 
       let isValid = true;
