@@ -11,9 +11,9 @@
     "deploy": "gh-pages -d dist",
     "cy:open": "cypress open",
     "test-jest": "jest",
-    "test-cypress-local": "cypress run --component",
+    "test-cypress-component": "cypress run --component",
     "test-cypress-e2e": "cypress run --e2e",
-    "test-all": "npm run test-jest && npm run test-cypress-local"
+    "test-all": "npm run test-jest && npm run test-cypress-component"
   },
   "author": "",
   "license": "ISC",

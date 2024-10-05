@@ -101,7 +101,7 @@ const Root = () => {
     }
   };
 
-  const formTouched = Object.values(formState).some((v) => v.value !== "");
+  const formTouched = Object.values(formState).some((v) => v.value !== undefined);
   const formHasErrors =
     !formTouched ||
     Object.values(formState).some((v) => !v.isValid || v.value === "");
