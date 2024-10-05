@@ -42,7 +42,7 @@ export const validateCreditCardNumber = (inputCreditCardNumber: string) => {
     return acc + n_int;
   }, 0);
 
-  return numberSum % 10 === lastDigit;
+  return (numberSum + lastDigit) % 10 === 0;
 };
 
 // bit from stackoverflow
