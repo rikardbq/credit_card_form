@@ -9,7 +9,7 @@
     - ``>_ $ npm run start`` 
     - ``>_ $ npm run test-cypress-e2e``
   - sample credit card number as per Luhn's formula example
-    - ``4556737586899855```
+    - ``4556737586899855``
     - 
 
 - **Other tasks**
