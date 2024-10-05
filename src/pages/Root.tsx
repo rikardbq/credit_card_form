@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getCreditCardBrandSchema } from "../util/creditCard";
 import { GenericObject } from "../types";
 import {
@@ -43,17 +43,6 @@ const initialFormState: GenericObject = {
 
 const Root = () => {
   const [formState, setFormState] = useState(initialFormState);
-  const [formTouched, setFormTouched] = useState(false);
-
-  useEffect(() => {
-    setFormTouched(Object.values(formState).some((v) => v.value !== ""));
-  }, [
-    formState.cardName.value,
-    formState.cardNumber.value,
-    formState.cardCVV.value,
-    formState.cardMonth.value,
-    formState.cardYear.value,
-  ]);
 
   const mutateFormState = (field: string, [key, val]: [string, any]) => {
     setFormState({
@@ -112,6 +101,7 @@ const Root = () => {
     }
   };
 
+  const formTouched = Object.values(formState).some((v) => v.value !== "");
   const formHasErrors =
     !formTouched ||
     Object.values(formState).some((v) => !v.isValid || v.value === "");
@@ -214,7 +204,10 @@ const Root = () => {
           field={formState.cardMonth}
           mutateFormState={mutateFormState}
           valueSetter={formFieldHandler}
-          validate={validateFieldAccordingToSchema(validationSchema)}
+          validate={validateFieldAccordingToSchema(
+            validationSchema,
+            formTouched
+          )}
         />
         <Input
           id="cardYear"
@@ -225,7 +218,10 @@ const Root = () => {
           field={formState.cardYear}
           mutateFormState={mutateFormState}
           valueSetter={formFieldHandler}
-          validate={validateFieldAccordingToSchema(validationSchema)}
+          validate={validateFieldAccordingToSchema(
+            validationSchema,
+            formTouched
+          )}
         />
       </div>
       <div className="flexCol gap20 centeredHorizontal">
