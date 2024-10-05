@@ -9,7 +9,7 @@ describe("root credit card form", () => {
   it("fills card number input correctly", () => {
     cy.visit("/");
 
-    cy.get("#cardNumber > input").type("4485294467389141");
+    cy.get("#cardNumber > input").type("375127892947456");
     cy.get("#cardNumberError").should("not.exist");
   });
 
@@ -81,7 +81,7 @@ describe("root credit card form", () => {
     cy.get("#cardName > input").type("Rikard Bergqvist");
     cy.get("#cardNameError").should("not.exist");
 
-    cy.get("#cardNumber > input").type("4485 2944 6738 9141");
+    cy.get("#cardNumber > input").type("375127892947456");
     cy.get("#cardNumberError").should("not.exist");
 
     cy.get("#cardCVV > input").type("999");

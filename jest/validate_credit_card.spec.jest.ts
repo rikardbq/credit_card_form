@@ -26,7 +26,7 @@ const creditCardBrandSchemas = [
 
 describe("credit card number", () => {
   it("is valid", () => {
-    const creditCardNumber = "4485294467389141";
+    const creditCardNumber = "375127892947456";
 
     expect(validateCreditCardNumber(creditCardNumber)).toBe(true);
   });
@@ -38,7 +38,7 @@ describe("credit card number", () => {
   });
 
   it("is American Express", () => {
-    const creditCardNumber = "341650377852304";
+    const creditCardNumber = "375127892947456";
     const creditCardBrandSchema =
       getCreditCardBrandSchema(creditCardNumber);
 
@@ -55,7 +55,7 @@ describe("credit card number", () => {
   });
 
   it("is MasterCard", () => {
-    const creditCardNumber = "5161597913287242";
+    const creditCardNumber = "5217146785686667";
     const creditCardBrandSchema =
       getCreditCardBrandSchema(creditCardNumber);
 
@@ -72,7 +72,7 @@ describe("credit card number", () => {
   });
 
   it("is Visa", () => {
-    const creditCardNumber = "4485294467389141";
+    const creditCardNumber = "4716739190742254";
     const creditCardBrandSchema =
       getCreditCardBrandSchema(creditCardNumber);
 
