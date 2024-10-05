@@ -34,7 +34,7 @@ const Input = ({
       <input
         name={name}
         type={type}
-        value={field.value}
+        value={field.value || ""}
         onChange={(e) => {
           valueSetter(name, e.target.value, mutateFormState);
         }}

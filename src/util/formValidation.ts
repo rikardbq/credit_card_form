@@ -1,7 +1,7 @@
 import { GenericObject } from "../types";
 import { validateCreditCardNumber } from "./creditCard";
 
-const numberRegexp = /[0-9]+/;
+const numberRegexp = /^[0-9]+$/;
 export const validationSchema: GenericObject = {
   cardName: {
     regexp: /^[a-zA-ZåäöÅÄÖ-\s]+$/,
@@ -38,15 +38,15 @@ export const validateFieldAccordingToSchema =
   (field: string, value: string, cb?: Function) => {
     if ((formTouched === undefined || formTouched) && value !== undefined) {
       const fieldSchema = schema[field];
-
       let isValid = true;
 
       if (!!fieldSchema) {
         Object.keys(fieldSchema).map((key: string) => {
           switch (key) {
-            case "regexp":
+            case "regexp": {
               isValid = isValid && fieldSchema[key].test(value);
               break;
+            }
             case "maxValue": {
               const valueAsNumber = parseInt(value);
               isValid =
