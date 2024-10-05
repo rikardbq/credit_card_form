@@ -102,9 +102,9 @@ const Root = () => {
   };
 
   const formTouched = Object.values(formState).some((v) => v.value !== undefined);
-  const formHasErrors =
+  const submitButtonDisabled =
     !formTouched ||
-    Object.values(formState).some((v) => !v.isValid || v.value === "");
+    Object.values(formState).some((v) => !v.isValid || v.value === undefined);
 
   return (
     <FormBody>
@@ -227,7 +227,7 @@ const Root = () => {
       <div className="flexCol gap20 centeredHorizontal">
         <button
           id="submitButton"
-          disabled={formHasErrors}
+          disabled={submitButtonDisabled}
           onClick={() => makePayment()}
         >
           PAY

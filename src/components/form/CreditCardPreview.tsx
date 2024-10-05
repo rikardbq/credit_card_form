@@ -12,11 +12,11 @@ type CreditCardPreviewProps = {
 
 const CreditCardPreview = ({
   formTouched,
-  name,
-  number,
-  cvv,
-  month,
-  year,
+  name = "",
+  number = "",
+  cvv = "",
+  month = "",
+  year = "",
 }: CreditCardPreviewProps) => {
   return (
     <div
