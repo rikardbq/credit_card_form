@@ -10,7 +10,6 @@
     - ``>_ $ npm run test-cypress-e2e``
   - sample credit card number as per Luhn's formula example
     - ``4556737586899855``
-    - 
 
 - **Other tasks**
   - [remove fourth consecutive repeating char](https://gist.github.com/rikardbq/5c808fd678a2504407f7a762b509512a) (contains 2 solutions)
